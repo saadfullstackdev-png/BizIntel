@@ -1,0 +1,1 @@
+<img src="{{asset('notification_templates_images/')}}/{{$noti_temp->image_url}}" alt="{{$noti_temp->image_url}}" width="60" hight="60">

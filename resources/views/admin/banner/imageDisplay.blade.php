@@ -1,0 +1,1 @@
+<img src="{{asset('banners_images/')}}/{{$banner->image_src}}" alt="{{$banner->image_src}}" width="60" hight="60">

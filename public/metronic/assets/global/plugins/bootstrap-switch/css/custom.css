@@ -1,0 +1,36 @@
+
+
+.custom-desktop-label .label{
+	float: left;
+	width: 25%;
+	padding: 11px 15px 0;
+	font-weight: 600;
+	color: #000;
+	text-align: left;
+	font-family: "Open Sans", sans-serif;
+}
+.custom-col{ margin: 0 -15px; }
+.custom-col .input{
+	float: left;
+	width: 25%;
+	padding: 0 15px;
+}
+.custom-col .input input[type="text"]{
+	width: 100%;
+
+}
+.modal-content.custom-popup{
+	width: 100%;
+	max-width: 880px;
+	margin-left: -440px;
+}
+
+@media (max-width:991px) {
+	.modal-content.custom-popup{
+		width: 90%;
+		max-width: initial;
+		margin: 0;
+		transform: translate(-50%);
+	}
+	.custom-col .input{ width: 50%; }	
+}

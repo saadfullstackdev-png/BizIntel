@@ -1,0 +1,116 @@
+var FormControls = function () {
+    var baseFunction = function () {
+        // To make Pace works on Ajax calls
+        $('.select2').select2({width: '100%'});
+        $('#date_range').daterangepicker({
+            "alwaysShowCalendars": true,
+            locale: {
+                // cancelLabel: 'Clear'
+            },
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'This Year': [moment().startOf('year'), moment().endOf('year')],
+                'Last Year': [moment().subtract(1, 'year').startOf('month'), moment().subtract(1, 'year').endOf('year')],
+            },
+            startDate: moment().subtract(29, 'days'),
+            endDate: moment()
+        });
+
+        $('input[name="date_range"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+        });
+
+        $('input[name="date_range"]').on('cancel.daterangepicker', function (ev, picker) {
+            // $(this).val('');
+        });
+        $('.dob').datepicker({
+            format: 'yyyy-mm-dd',
+        }).on('changeDate', function (ev) {
+            $(this).datepicker('hide');
+        });
+        $("#cnic").inputmask("99999-9999999-9", {
+            placeholder: "XXXXX-XXXXXXX-X",
+            clearMaskOnLostFocus: true
+        });
+    }
+    var loadReport = function () {
+        $('#load_report').html('<i class="fa fa-spin fa-refresh"></i>&nbsp;Load Report').attr('disabled', true);
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: route('admin.leads.leads_reports_load'),
+            type: "POST",
+            data: {
+                date_range: $('#date_range').val(),
+                patient_id: $('#patient_id').val(),
+                cnic: $('#cnic').val(),
+                dob: $('#dob').val(),
+                email: $('#email').val(),
+                gender_id: $('#gender_id').val(),
+                age_group_range: $('#age_group_range').val(),
+                region_id: $('#region_id').val(),
+                city_id: $('#city_id').val(),
+                town_id: $('#town_id').val(),
+                location_id: $('#location_id').val(),
+                lead_status_id: $('#lead_status_id').val(),
+                service_id: $('#service_id').val(),
+                telecomprovider_id: $('#telecomprovider_id').val(),
+                phone: $('#phone').val(),
+                user_id: $('#user_id').val(),
+                medium_type: $('#medium_type').val(),
+                report_type: $('#report_type').val(),
+                lead_sources_id: $('#lead_sources_id').val(),
+            },
+            success: function (response) {
+                $('#content').html('');
+                $('#content').html(response);
+                $('#load_report').html('Load Report').removeAttr('disabled');
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                $('#load_report').html('Load Report').removeAttr('disabled');
+                return false;
+            }
+        });
+    }
+
+    var printReport = function (medium_type) {
+        $('#date_range-report').val($('#date_range').val());
+        $('#patient_id-report').val($('#patient_id').val());
+        $('#cnic-report').val($('#cnic').val());
+        $('#dob-report').val($('#dob').val());
+        $('#email-report').val($('#email').val());
+        $('#gender_id-report').val($('#gender_id').val());
+        $('#age_group_range-report').val($('#age_group_range').val());
+        $('#region_id-report').val($('#region_id').val());
+        $('#city_id-report').val($('#city_id').val());
+        $('#town_id-report').val($('#town_id').val());
+        $('#location_id-report').val($('#location_id').val());
+        $('#lead_status_id-report').val($('#lead_status_id').val());
+        $('#service_id-report').val($('#service_id').val());
+        $('#telecomprovider_id-report').val($('#telecomprovider_id').val());
+        $('#phone-report').val($('#phone').val());
+        $('#user_id-report').val($('#user_id').val());
+        $('#medium_type-report').val(medium_type);
+        $('#report_type-report').val($('#report_type').val());
+        $('#report-form').submit();
+    }
+
+    return {
+        // public functions
+        init: function () {
+            baseFunction();
+        },
+        loadReport: loadReport,
+        printReport: printReport,
+    };
+}();
+
+jQuery(document).ready(function () {
+    FormControls.init();
+});

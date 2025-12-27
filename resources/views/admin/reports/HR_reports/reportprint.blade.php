@@ -1,0 +1,115 @@
+@inject('request', 'Illuminate\Http\Request')
+        <!DOCTYPE html>
+<html>
+<head>
+    <link href="{{ url('metronic/assets/global/css/print-page.css') }}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div class="sn-table-holder">
+    <div class="sn-report-head">
+        <div class="sn-title">
+            <h1>{{ 'Incentive Report'  }}</h1>
+        </div>
+    </div>
+</div>
+
+<div class="panel-body sn-table-body">
+    <div class="sn-table-head">
+        <div class="print-logo">
+            <img src="{{ asset('centre_logo/logo_final.png') }}" height="80">
+        </div>
+        <div class="print-time">
+            <table class="dark-th-table table table-bordered">
+                <tr>
+                    <th width="25%">Duration</th>
+                    <td>From {{ $start_date }} to {{ $end_date }}</td>
+                </tr>
+                <tr>
+                    <th>Date</th>
+                    <td>{{ \Carbon\Carbon::now()->format('Y-m-d') }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+<?php $count = 1; ?>
+    <table class="table">
+        <tr style=" background: #364150; color: #fff;">
+            <th>@lang('global.leads.fields.full_name')</th>
+            <th>@lang('global.leads.fields.email')</th>
+            <th>@lang('global.leads.fields.phone')</th>
+            <th>@lang('global.leads.fields.gender')</th>
+            <th>@lang('global.leads.fields.role')</th>
+            <th>@lang('global.leads.fields.region')</th>
+            <th>@lang('global.leads.fields.city')</th>
+            <th>@lang('global.leads.fields.location')</th>
+            <th>@lang('global.leads.fields.total_Revenue')</th>
+            <th>@lang('global.leads.fields.commission')</th>
+            <th>@lang('global.leads.fields.incentive')</th>
+        </tr>
+        @if(count($reportData))
+            <?php $total = 0; $rtotal = 0;?>
+            @foreach($reportData as $user)
+                <tr>
+                    <td>{{ $user['name'] }}</td>
+                    <td>{{ $user['email'] }}</td>
+                    <td>{{ $user['phone'] }}</td>
+                    <td>{{ $user['gender'] }}</td>
+                    <td>{{ $user['Role'] }}</td>
+                    <td>{{ $user['Region'] }}</td>
+                    <td>{{ $user['City'] }}</td>
+                    <td>{{ $user['Location'] }}</td>
+                    <td style="text-align: right">
+                        <?php
+                        $rtotal += $user['TotalRevenue'];
+                        echo number_format($user['TotalRevenue'], 2)
+                        ?>
+                    </td>
+                    <td>{{$user['commission']}}</td>
+                    <td style="text-align: right">
+                        <?php
+                        $total += $user['Incentive'];
+                        echo number_format($user['Incentive'], 2);
+                        ?>
+                    </td>
+                </tr>
+            @endforeach
+            <tr style=" background: #364150; color: #fff;">
+                <td><b>Grand Total</b></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right"><b>
+                        <?php
+                        echo number_format($rtotal, 2);
+                        ?>
+                    </b>
+                </td>
+                <td></td>
+                <td style="text-align: right"><b>
+                        <?php
+                        echo number_format($total, 2);
+                        ?>
+                    </b>
+                </td>
+            </tr>
+        @else
+            @if($message)
+                <tr>
+                    <td colspan="12" align="center">{{$message}}</td>
+                </tr>
+            @else
+                <tr>
+                    <td colspan="12" align="center">No record round.</td>
+                </tr>
+            @endif()
+        @endif
+    </table>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,147 @@
+@inject('request', 'Illuminate\Http\Request')
+@if($request->get('medium_type') != 'web')
+    @if($request->get('medium_type') == 'pdf')
+        @include('partials.pdf_head')
+    @else
+        @include('partials.head')
+    @endif
+    <style type="text/css">
+        @page {
+            margin: 10px 20px;
+        }
+        @media print {
+            table {
+                font-size: 12px;
+            }
+            .tr-root-group {
+                background-color: #F3F3F3;
+                color: rgba(0, 0, 0, 0.98);
+                font-weight: bold;
+            }
+            .tr-group {
+                font-weight: bold;
+            }
+            .bold-text {
+                font-weight: bold;
+            }
+            .error-text {
+                font-weight: bold;
+                color: #FF0000;
+            }
+            .ok-text {
+                color: #006400;
+            }
+        }
+    </style>
+@endif
+<div class="sn-table-holder">
+    <div class="sn-report-head">
+        <div class="sn-title">
+            <h1>{{ 'List of Client Who Claimed Refund Against Non Plans Report'  }}</h1>
+        </div>
+        <div class="sn-buttons">
+            @if($request->get('medium_type') == 'web')
+                <a class="btn sn-white-btn btn-default" href="javascript:;" onclick="FormControls.printReport('excel');">
+                    <i class="fa fa-file-excel-o"></i><span>Excel</span>
+                </a>
+                <a class="btn sn-white-btn btn-default" href="javascript:;" onclick="FormControls.printReport('pdf');">
+                    <i class="fa fa-file-pdf-o"></i><span>PDF</span>
+                </a>
+                <a class="btn sn-white-btn btn-default" href="javascript:;" onclick="FormControls.printReport('print');">
+                    <i class="fa fa-print"></i><span>Print</span>
+                </a>
+            @endif
+        </div>
+    </div>
+</div>
+<div class="panel-body sn-table-body">
+    <div class="bordered">
+        <div class="sn-table-head">
+            <div class="row">
+                <div class="col-md-2">
+                    <img src="{{ asset('centre_logo/logo_final.png') }}" height="80">
+                </div>
+                <div class="col-md-6">&nbsp;</div>
+                <div class="col-md-4">
+                    <table class="dark-th-table table table-bordered">
+                        <tr>
+                            <th width="25%">Duration</th>
+                            <td>From {{ $start_date }} to {{ $end_date }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date</th>
+                            <td>{{ \Carbon\Carbon::now()->format('Y-m-d') }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div><!-- End sn-table-head -->
+        <div class="table-wrapper" id="topscroll">
+            <table class="table">
+                <thead>
+                    <th>ID</th>
+                    <th>Patient Name</th>
+                    <th>Email</th>
+                    <th>Doctor</th>
+                    <th>Service</th>
+                    <th>Appointment Scheduled</th>
+                    <th>City</th>
+                    <th>Center</th>
+                    <th>Total Price</th>
+                    <th>Refund Amount</th>
+                </thead>
+                <tbody>
+                @if(count($reportData))
+                    <?php $gtotal = 0; $grefundtotal = 0; ?>
+                    @foreach($reportData as $reportRow)
+                        <tr>
+                            <td>{{$reportRow['patient_id']}}</td>
+                            <td>{{$reportRow['patient_name']}}</td>
+                            <td>{{$reportRow['email']}}</td>
+                            <td>{{$reportRow['doctor']}}</td>
+                            <td>{{$reportRow['service']}}</td>
+                            <td>{{$reportRow['schedule']}}</td>
+                            <td>{{$reportRow['city']}}</td>
+                            <td>{{$reportRow['location']}}</td>
+                            <td><?php echo number_format($reportRow['total_price'],2)?></td>
+                            <td><?php echo number_format($reportRow['refund_amount'],2) ?></td>
+                            <?php
+                            $gtotal+=$reportRow['total_price'];
+                            $grefundtotal+=$reportRow['refund_amount'];
+                            ?>
+                        </tr>
+                    @endforeach
+                    <tr style="background: #364150; color: #fff; font-weight: bold">
+                        <td style="text-align: center;color: #fff;">Total</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td style="color: #fff;"><?php echo number_format($gtotal,2);?></td>
+                        <td style="color: #fff;"><?php echo number_format($grefundtotal,2);?></td>
+                    </tr>
+                @else
+                    @if($message)
+                        <tr>
+                            <td colspan="12" align="center">{{$message}}</td>
+                        </tr>
+                    @else
+                        <tr>
+                            <td colspan="12" align="center">No record round.</td>
+                        </tr>
+                    @endif()
+
+                @endif
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+    <div class="clear clearfix"></div>
+    <!-- Liabilities and Assets -->
+    <script src="{{ url('js/admin/scrollbar/scrollbardev.js') }}" type="text/javascript"></script>
+
+</div>

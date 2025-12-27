@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.threedlifestyle",
+            "sha256_cert_fingerprints": [
+                "15:CB:B9:33:CE:16:00:D6:0A:BF:5D:96:00:B2:96:15:1E:CD:B8:1D:49:58:78:A3:FD:34:A8:94:0C:C9:18:3A"
+            ]
+        }
+    }
+]

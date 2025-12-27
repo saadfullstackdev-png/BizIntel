@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use App\Models\AuditTrails;
+use Auth;
+
+class DoctorHasLocations extends Model
+{
+    protected $fillable = ['user_id', 'location_id', 'service_id', 'end_node'];
+
+    public static $_fillable = ['user_id', 'region_id', 'location_id'];
+
+    protected $table = 'doctor_has_locations';
+
+    public static $_table = 'user_has_locations';
+
+
+
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id')->withTrashed();
+    }
+
+    public function location()
+    {
+        return $this->belongsTo('App\Models\Locations', 'location_id')->withTrashed();
+    }
+
+    public function service()
+    {
+        return $this->belongsTo('App\Models\Services', 'service_id')->withTrashed();
+    }
+}

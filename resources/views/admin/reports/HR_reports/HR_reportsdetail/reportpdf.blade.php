@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <style>
+        .date {
+            text-align: right;
+        }
+
+        .logo {
+            width: 200px;
+            text-align: left;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 30px;
+        }
+
+        .table th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        td, th {
+            text-align: left;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        .table td, .table th {
+            text-align: left;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        .table tr:first-child {
+            background-color: #fff;
+        }
+
+        table.table tr td {
+            padding: 12px;
+        }
+
+        table.table tr:first-child {
+            background-color: #fff;
+        }
+
+        .table tr:nth-child(odd) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-pdf">
+    <table>
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td>
+                            <img class="logo" src="{{ asset('centre_logo/logo_final.png') }}"
+                                 class="img-responsive" alt=""/>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td style="padding-left: 100px;">
+                <table style="float: right;">
+                    <tr>
+                        <td style="width: 70px;">Name</td>
+                        <td>Incentive Report</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 70px;">Duration</td>
+                        <td>From:&nbsp;<strong>{{ $start_date }}</strong>&nbsp;To:&nbsp;<strong>{{ $end_date }}</strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 70px;">Date</td>
+                        <td><strong>{{ Carbon\Carbon::now()->format('Y-m-d') }}</strong></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <?php $count = 1; ?>
+    <table class="table">
+        <tr style=" background: #364150; color: #fff;">
+            <th>@lang('global.leads.fields.full_name')</th>
+            <th>@lang('global.leads.fields.email')</th>
+            <th>@lang('global.leads.fields.phone')</th>
+            <th>@lang('global.leads.fields.gender')</th>
+            <th>@lang('global.leads.fields.role')</th>
+            <th>@lang('global.leads.fields.region')</th>
+            <th>@lang('global.leads.fields.city')</th>
+            <th>@lang('global.leads.fields.location')</th>
+            <th>@lang('global.leads.fields.total_Revenue')</th>
+            <th>@lang('global.leads.fields.commission')</th>
+            <th>@lang('global.leads.fields.incentive')</th>
+        </tr>
+        @if(count($reportData))
+            <?php $total = 0; $rtotal = 0;?>
+            @foreach($reportData as $user)
+                <tr>
+                    <td>{{ $user['name'] }}</td>
+                    <td>{{ $user['email'] }}</td>
+                    <td>{{ $user['phone'] }}</td>
+                    <td>{{ $user['gender'] }}</td>
+                    <td>{{ $user['Role'] }}</td>
+                    <td>{{ $user['Region'] }}</td>
+                    <td>{{ $user['City'] }}</td>
+                    <td>{{ $user['Location'] }}</td>
+                    <td style="text-align: right">
+                        <?php
+                        $rtotal += $user['TotalRevenue'];
+                        echo number_format($user['TotalRevenue'], 2)
+                        ?>
+                    </td>
+                    <td>{{$user['commission']}}</td>
+                    <td style="text-align: right">
+                        <?php
+                        $total += $user['Incentive'];
+                        echo number_format($user['Incentive'], 2);
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Invoice No.</th>
+                    <th>Service</th>
+                    <th>Payment Date</th>
+                    <th>Created by</th>
+                    <th>Patient</th>
+                    <th>Service Price</th>
+                    <th>Discount Name</th>
+                    <th>Discount Type</th>
+                    <th>Discount Amount</th>
+                    <th>Invoice Price</th>
+                    <th>Centre</th>
+                </tr>
+                <?php  $grandserviceprice = 0;$grandtotalservice = 0;?>
+                @foreach($user['detail'] as $reportRow)
+                    <tr>
+                        <td style="text-align: center;">{{ $reportRow['id']}}</td>
+                        <td>{{ (array_key_exists($reportRow['service_id'], $filters['services'])) ? $filters['services'][$reportRow['service_id']]->name : '-' }}</td>
+                        <td>{{ ($reportRow['created_at']) ? \Carbon\Carbon::parse($reportRow['created_at'], null)->format('M j, Y') . ' at ' . \Carbon\Carbon::parse($reportRow['created_at'], null)->format('h:i A') : '-' }}</td>
+                        <td>{{ (array_key_exists($reportRow['created_by'], $filters['users'])) ? $filters['users'][$reportRow['created_by']]->name : '-' }}</td>
+                        <td>{{ (array_key_exists($reportRow['patient_id'], $filters['patients'])) ? $filters['patients'][$reportRow['patient_id']]->name : '-' }}</td>
+                        <td style="text-align: right;">
+                            <?php
+                            $grandserviceprice += (array_key_exists($reportRow['service_id'], $filters['services'])) ? $filters['services'][$reportRow['service_id']]->price : '';
+                            echo number_format((array_key_exists($reportRow['service_id'], $filters['services'])) ? $filters['services'][$reportRow['service_id']]->price : '', 2);
+                            ?>
+                        </td>
+                        <td>{{ (array_key_exists($reportRow['discount_id'], $filters['discounts'])) ? $filters['discounts'][$reportRow['discount_id']]->name : '-' }}</td>
+                        <td>{{$reportRow['discount_type']==null?'-':$reportRow['discount_type']}}</td>
+                        <td style="text-align: right;">{{$reportRow['discount_price']==null?'-':$reportRow['discount_price']}}</td>
+                        <td style="text-align: right;">
+                            <?php
+                            $grandtotalservice += $reportRow['total_price'];
+                            echo number_format($reportRow['total_price'], 2);
+                            ?>
+                        </td>
+                        <td>{{ (array_key_exists($reportRow['location_id'], $filters['locations'])) ? $filters['locations'][$reportRow['location_id']]->name : '-' }}</td>
+                    </tr>
+                @endforeach
+                <tr style="background-color: #37abdc;color: #fff;font-weight: bold;">
+                    <td>Total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right;"><?php echo number_format($grandserviceprice, 2);?></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td style="text-align: right;"><?php echo number_format($grandtotalservice, 2);?></td>
+                    <td></td>
+                </tr>
+            @endforeach
+            <tr style=" background: #364150; color: #fff;">
+                <td style="color: #fff;"><b>Grand Total</b></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right;color: #fff;"><b>
+                        <?php
+                        echo number_format($rtotal, 2);
+                        ?>
+                    </b>
+                </td>
+                <td></td>
+                <td style="text-align: right;color: #fff;"><b>
+                        <?php
+                        echo number_format($total, 2);
+                        ?>
+                    </b>
+                </td>
+            </tr>
+        @else
+            @if($message)
+                <tr>
+                    <td colspan="12" align="center">{{$message}}</td>
+                </tr>
+            @else
+                <tr>
+                    <td colspan="12" align="center">No record round.</td>
+                </tr>
+            @endif()
+        @endif
+    </table>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,60 @@
+.bg-primary{
+	background-color: #37abdc !important;
+	color:#fff;
+}
+
+.bg-default{
+	background-color: #364150 !important;
+	color:#fff;
+}
+
+.table-primary thead tr{
+	background-color: #37abdc;
+	color:#fff;
+}
+
+.table-primary tbody tr:nth-child(even){
+	background-color: #eee;
+	color:#364150;
+}
+
+.table-default thead tr{
+	background-color: #364150;
+	color:#fff;
+}
+
+.table-default tbody tr:nth-child(even){
+	background-color: #eee;
+	color:#364150;
+}
+.bg-gray{
+	background-color: #eee;
+    color: #364150;
+}
+.total-bg{
+	background-color: #eeeeee;
+    color: #3aaddc;
+    font-weight: bold;
+}
+.font-800{
+	font-weight: 800;
+}
+.dataTables_wrapper table.dataTable thead .sorting:after,
+.dataTables_wrapper table.dataTable thead .sorting_asc:after,
+.dataTables_wrapper table.dataTable thead .sorting_desc:after,
+.dataTables_wrapper table.dataTable thead .sorting_asc_disabled:after,
+.dataTables_wrapper table.dataTable thead .sorting_desc_disabled:after{
+	right:18px;
+}
+.modal-content{
+	transform: none !important;
+	top: 100px;
+}
+@media(max-height: 767px){
+	.modal-open .modal{
+		overflow-y: auto !important;
+	}
+	.modal-content{
+		top: 50px;
+	}
+}
